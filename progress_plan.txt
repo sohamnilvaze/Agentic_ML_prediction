@@ -1,0 +1,17 @@
+| Phase                | Status | Progress |
+| -------------------- | ------ | -------- |
+| Foundation           | ✅      | 100%     |
+| Dataset Preparation  | ✅      | 100%     |
+| Core Architecture    | ✅      | 100%     |
+| Task Discovery       | ✅      | 100%     |
+| Human Review 1       | ✅      | 100%     |
+| Dataset Builder      | 🟡     | ~75%     |
+| Human Review 2       | ⏳      | 0%       |
+| Model Selection      | ⏳      | 0%       |
+| Human Review 3       | ⏳      | 0%       |
+| Training             | ⏳      | 0%       |
+| Evaluation           | ⏳      | 0%       |
+| Iteration Controller | ⏳      | 0%       |
+| Registry             | ⏳      | 0%       |
+| Workflow Engine      | ⏳      | 0%       |
+| LangGraph Migration  | ⏳      | 0%       |

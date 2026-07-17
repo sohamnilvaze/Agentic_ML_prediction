@@ -46,4 +46,7 @@ class ExplainabilityAgent(BaseAgent):
 
         )
 
+        state.current_stage = "EXPLAINABILITY_COMPLETED"
+        state.add_history("Explainability artifacts generated.")
+
         return state

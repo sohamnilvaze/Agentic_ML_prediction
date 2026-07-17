@@ -29,3 +29,15 @@ class ModelSelectionResult:
     selection_summary: str = ""
 
     metadata: dict = field(default_factory=dict)
+
+    def to_dict(self):
+        return {
+            "selected_models": [model.to_dict() for model in self.selected_models],
+            "rejected_models": [model.to_dict() for model in self.rejected_models],
+            "total_models": self.total_models,
+            "selected_count": self.selected_count,
+            "rejected_count": self.rejected_count,
+            "best_model": self.best_model.to_dict() if self.best_model else None,
+            "selection_summary": self.selection_summary,
+            "metadata": self.metadata,
+        }

@@ -71,6 +71,9 @@ class ModelTrainingAgent(BaseAgent):
 
         dataset_artifact = state.dataset_artifact
 
+        if dataset_artifact is None:
+            raise ValueError("WorkflowState.dataset_artifact is required.")
+
         dataset_profile = self.profiler.profile(
 
             dataset_artifact.dataset,
@@ -126,5 +129,9 @@ class ModelTrainingAgent(BaseAgent):
         )
 
         state.training_artifact = training_artifact
+        state.current_stage = "MODEL_TRAINING_COMPLETED"
+        state.add_history(
+            f"Model training completed with {len(training_artifact.training_results)} trained models."
+        )
 
         return state

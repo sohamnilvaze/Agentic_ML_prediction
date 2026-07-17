@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from core.criterion_result import CriterionResult
+from core.criterion_score import CriterionScore
 from core.feature_evaluation_context import FeatureEvaluationContext
 from core.feature_evaluation_config import FeatureEvaluationConfig
 
@@ -187,22 +187,15 @@ class FeatureCriterion(ABC):
 
         return "No description."
 
-    def evaluate(
-        self,
-        context
-    ):
+    def evaluate(self, context) -> CriterionScore:
+        """
+        Backward-compatible alias for compute_score.
 
-        score, passed, reasoning, details = \
-            self.compute_score(context)
+        The active feature-evaluation pipeline consumes CriterionScore
+        objects directly.
+        """
 
-        return self.build_result(
-
-            score,
-            passed,
-            reasoning,
-            details
-
-        )
+        return self.compute_score(context)
 
     @abstractmethod
     def compute_score(
@@ -219,32 +212,3 @@ class FeatureCriterion(ABC):
         """
         pass
 
-    def build_result(
-
-        self,
-
-        score,
-
-        passed,
-
-        reasoning,
-
-        details
-
-    ):
-
-        return CriterionResult(
-
-            criterion_name=self.name,
-
-            score=score,
-
-            passed=passed,
-
-            reasoning=reasoning,
-
-            weight=self.weight,
-
-            details=details
-
-        )

@@ -381,3 +381,25 @@ class DatasetProfiler:
             2
 
         )
+
+    def profile(
+        self,
+        dataframe: pd.DataFrame,
+        target_column: str = None
+    ) -> DatasetProfile:
+        """
+        Backward-compatible alias for callers expecting the older API.
+        """
+
+        if target_column is None:
+            raise ValueError("target_column is required.")
+
+        profile = DatasetProfile()
+        profile.target_column = target_column
+        self._compute_basic_statistics(dataframe, profile)
+        self._compute_column_statistics(dataframe, profile, target_column)
+        self._compute_missing_statistics(dataframe, profile)
+        self._compute_cardinality_statistics(dataframe, profile, target_column)
+        self._compute_target_statistics(dataframe, profile, target_column)
+        self._compute_memory_statistics(dataframe, profile)
+        return profile

@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import pandas as pd
 
-from core.candidate_task import CandidateTask
+if TYPE_CHECKING:
+    from core.state import PredictionTask
 from core.dataset_report import DatasetReport
 from core.dataset_validation_report import DatasetValidationReport
 from core.feature_selection_result import FeatureSelectionResult
@@ -18,7 +19,7 @@ class DatasetArtifact:
     agents to understand and use the constructed dataset.
     """
 
-    task: CandidateTask
+    task: "PredictionTask"
 
     dataset: pd.DataFrame
 

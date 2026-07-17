@@ -20,6 +20,8 @@ from core.feature_evaluation_result import FeatureEvaluationResult
 from core.feature_selection import FeatureSelectionResult
 from core.candidate_feature import CandidateFeature
 from core.registry_artifact import RegistryArtifact 
+from core.training_artifact import TrainingArtifact
+from core.explainability_artifact import ExplainabilityArtifact
 
 @dataclass
 class WorkflowState:
@@ -137,6 +139,10 @@ class WorkflowState:
 
     dataset_artifact: DatasetArtifact | None = None
 
+    training_artifact: TrainingArtifact | None = None
+
+    explainability_artifact: ExplainabilityArtifact | None = None
+
     registry_artifact: RegistryArtifact | None = None
 
     raw_dataset: pd.DataFrame | None = None
@@ -244,6 +250,28 @@ class PredictionTask:
     # -----------------------------
 
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def disease_name(self) -> str:
+        return self.target_value
+
+    @property
+    def task_id(self) -> str:
+        return self.metadata.get(
+            "task_id",
+            self.target_value
+        )
+
+    @property
+    def positive_label(self) -> str:
+        return self.target_value
+
+    @property
+    def negative_label(self) -> str:
+        return self.metadata.get(
+            "negative_label",
+            f"not_{self.target_value}"
+        )
 
     def to_dict(self):
 

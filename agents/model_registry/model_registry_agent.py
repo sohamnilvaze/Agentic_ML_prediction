@@ -72,5 +72,9 @@ class ModelRegistryAgent(BaseAgent):
         )
 
         state.registry_artifact = registry_artifact
+        state.current_stage = "REGISTRY_COMPLETED"
+        state.add_history(
+            f"Registered {len(saved_models)} trained models."
+        )
 
         return state

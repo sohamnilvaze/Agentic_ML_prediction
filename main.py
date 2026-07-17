@@ -1,217 +1,245 @@
 import pandas as pd
+from datetime import datetime, timedelta
+import random
 
-from agents.dataset_builder.dataset_builder import DatasetBuilderAgent
-from agents.dataset_builder.dataset_report_builder import DatasetReportBuilder
-from agents.dataset_builder.dataset_validator import DatasetValidator
+from agents.dataset_builder import (
+    DatasetBuilderAgent,
+    DatasetReportBuilder,
+    DatasetValidator,
+    FeatureEvaluator,
+)
+from agents.explainability import (
+    ExplainabilityAgent,
+    ExplainabilityPipeline,
+)
+from agents.model_registry import (
+    ModelRegistryAgent,
+    ModelSaver,
+)
+from agents.model_training import (
+    CandidateModelGenerator,
+    DatasetProfiler,
+    ModelEvaluator,
+    ModelSelector,
+    ModelTrainingAgent,
+    TrainingPipeline,
+)
+from agents.task_discovery import TaskDiscoveryAgent
+from core.config import (
+    DATASET_PROFILE_FILE,
+    DATASET_SUMMARY_FILE,
+    DIAGNOSIS_DISTRIBUTION_FILE,
+    PATIENTS_FILE,
+    ADMISSIONS_FILE,
+    MASTER_DATASET_FILE,
+)
 from core.dataset_construction import DatasetConstructor
+from core.feature_evaluation_config import FeatureEvaluationConfig
 from core.feature_selector import FeatureSelector
+from core.preprocessing import MasterDatasetPreprocessor
+from core.state import WorkflowState
+from core.constants import WorkflowStage
+from core.utils import assert_file_exists, log_info
+from core.utils import ensure_directory_exists
+from human.reviewer import HumanReviewAgent
 from workflow.workflow_engine import WorkflowEngine
 
-from core.state import WorkflowState
-
-# =====================================================
-# Task Discovery
-# =====================================================
-
-# =====================================================
-# Human Review
-# =====================================================
-
-
-# =====================================================
-# Dataset Builder
-# =====================================================
-
-# Import your feature criteria
-
-...
-
-# =====================================================
-# Model Training
-# =====================================================
-
-from agents.model_training.model_training_agent import (
-    ModelTrainingAgent
+from agents.model_training.criteria.dataset_size_criterion import (
+    DatasetSizeCriterion,
+)
+from agents.model_training.criteria.missing_value_criterion import (
+    MissingValueCriterion,
 )
 
-from agents.model_training.dataset_profiler import (
-    DatasetProfiler
-)
 
-from agents.model_training.candidate_model_generator import (
-    CandidateModelGenerator
-)
+def _prepare_master_artifacts() -> None:
+    """
+    Ensure the master dataset and preprocessing artifacts exist.
+    """
 
-from agents.model_training.model_evaluator import (
-    ModelEvaluator
-)
-
-from agents.model_training.model_selector import (
-    ModelSelector
-)
-
-from agents.model_training.training_pipeline import (
-    TrainingPipeline
-)
-
-# =====================================================
-# Explainability
-# =====================================================
-
-from agents.explainability.explainability_agent import (
-    ExplainabilityAgent
-)
-
-from agents.explainability.explainability_pipeline import (
-    ExplainabilityPipeline
-)
-
-# =====================================================
-# Registry
-# =====================================================
-
-from agents.model_registry.model_registry_agent import (
-    ModelRegistryAgent
-)
-
-from agents.model_registry.model_saver import (
-    ModelSaver
-)
-
-# =====================================================
-# Load Dataset
-# =====================================================
-
-raw_dataframe = pd.read_csv(
-
-    "data/titanic.csv"
-
-)
-
-# =====================================================
-# Initial Workflow State
-# =====================================================
-
-state = WorkflowState(
-
-    raw_dataset=raw_dataframe
-
-)
-
-# =====================================================
-# Construct Dataset Builder
-# =====================================================
-
-from agents.dataset_builder.feature_evaluator import FeatureEvaluator
-
-feature_evaluator = FeatureEvaluator(
-
-    criteria=[
-
-        ...
-
+    required_files = [
+        MASTER_DATASET_FILE,
+        DIAGNOSIS_DISTRIBUTION_FILE,
+        DATASET_PROFILE_FILE,
+        DATASET_SUMMARY_FILE,
     ]
 
-)
+    if all(path.exists() for path in required_files):
+        return
 
-dataset_builder_agent = DatasetBuilderAgent(
+    _bootstrap_demo_raw_data()
+    preprocessor = MasterDatasetPreprocessor()
+    preprocessor.run_pipeline()
 
-    evaluator=feature_evaluator,
 
-    selector=FeatureSelector(),
+def _bootstrap_demo_raw_data() -> None:
+    """
+    Create a small synthetic MIMIC-like dataset when raw inputs are missing.
+    This keeps the end-to-end workflow runnable in a clean workspace.
+    """
 
-    constructor=DatasetConstructor(),
+    if PATIENTS_FILE.exists() and ADMISSIONS_FILE.exists():
+        return
 
-    validator=DatasetValidator(),
+    ensure_directory_exists(PATIENTS_FILE.parent)
 
-    report_builder=DatasetReportBuilder()
+    rng = random.Random(42)
+    n_patients = 300
+    n_admissions = 1200
 
-)
+    patient_ids = list(range(10000, 10000 + n_patients))
 
-# =====================================================
-# Construct Model Training
-# =====================================================
+    patients = []
+    for subject_id in patient_ids:
+        gender = rng.choice(["M", "F"])
+        dob_year = rng.randint(1930, 1990)
+        dob_month = rng.randint(1, 12)
+        dob_day = rng.randint(1, 28)
+        patients.append(
+            {
+                "subject_id": subject_id,
+                "gender": gender,
+                "dob": datetime(dob_year, dob_month, dob_day).strftime("%Y-%m-%d"),
+            }
+        )
 
-model_evaluator = ModelEvaluator(
-
-    criteria=[
-
-        ...
-
+    diagnoses = [
+        ("Sepsis", 500),
+        ("Pneumonia", 400),
+        ("Heart Failure", 300),
     ]
 
-)
+    diagnosis_pool = []
+    for diagnosis, count in diagnoses:
+        diagnosis_pool.extend([diagnosis] * count)
 
-model_training_agent = ModelTrainingAgent(
+    admissions = []
+    for hadm_id, diagnosis in enumerate(diagnosis_pool, start=200000):
+        subject_id = rng.choice(patient_ids)
+        admit_year = rng.randint(2010, 2014)
+        admit_month = rng.randint(1, 12)
+        admit_day = rng.randint(1, 28)
+        admit_hour = rng.randint(0, 23)
+        admit_minute = rng.randint(0, 59)
+        admit_time = datetime(
+            admit_year,
+            admit_month,
+            admit_day,
+            admit_hour,
+            admit_minute,
+        )
+        length_of_stay_days = rng.randint(1, 10)
+        discharge_time = admit_time + timedelta(days=length_of_stay_days)
 
-    profiler=DatasetProfiler(),
+        admissions.append(
+            {
+                "subject_id": subject_id,
+                "hadm_id": hadm_id,
+                "admittime": admit_time.strftime("%Y-%m-%d %H:%M:%S"),
+                "dischtime": discharge_time.strftime("%Y-%m-%d %H:%M:%S"),
+                "admission_type": rng.choice(["EMERGENCY", "ELECTIVE", "URGENT"]),
+                "admission_location": rng.choice(
+                    ["EMERGENCY ROOM", "CLINIC REFERRAL", "TRANSFER"]
+                ),
+                "discharge_location": rng.choice(
+                    ["HOME", "SNF", "REHAB", "EXPIRED"]
+                ),
+                "insurance": rng.choice(["Medicare", "Private", "Medicaid"]),
+                "language": rng.choice(["EN", "ES", "PT"]),
+                "religion": rng.choice(["CATHOLIC", "PROTESTANT", "JEWISH", "NONE"]),
+                "marital_status": rng.choice(["MARRIED", "SINGLE", "DIVORCED"]),
+                "ethnicity": rng.choice(
+                    ["WHITE", "BLACK", "HISPANIC", "ASIAN", "OTHER"]
+                ),
+                "diagnosis": diagnosis,
+                "hospital_expire_flag": rng.choice([0, 1]),
+            }
+        )
 
-    model_generator=CandidateModelGenerator(),
+    pd.DataFrame(patients).to_csv(PATIENTS_FILE, index=False)
+    pd.DataFrame(admissions).to_csv(ADMISSIONS_FILE, index=False)
+    log_info(
+        f"Bootstrapped synthetic raw data: {len(patients)} patients, {len(admissions)} admissions."
+    )
 
-    evaluator=model_evaluator,
 
-    selector=ModelSelector(),
+def build_workflow_state() -> WorkflowState:
+    state = WorkflowState()
+    state.master_dataset_path = str(MASTER_DATASET_FILE)
+    state.diagnosis_distribution_path = str(DIAGNOSIS_DISTRIBUTION_FILE)
+    state.dataset_profile_path = str(DATASET_PROFILE_FILE)
+    state.dataset_summary_path = str(DATASET_SUMMARY_FILE)
+    state.current_stage = WorkflowStage.TASK_DISCOVERY.value
+    state.raw_dataset = pd.read_csv(MASTER_DATASET_FILE)
+    return state
 
-    training_pipeline=TrainingPipeline()
 
-)
+def build_workflow_engine() -> WorkflowEngine:
+    feature_evaluator = FeatureEvaluator(config=FeatureEvaluationConfig())
 
-# =====================================================
-# Construct Explainability
-# =====================================================
+    dataset_builder_agent = DatasetBuilderAgent(
+        feature_evaluator=feature_evaluator,
+        feature_selector=FeatureSelector(),
+        dataset_constructor=DatasetConstructor(),
+        dataset_validator=DatasetValidator(),
+        report_builder=DatasetReportBuilder(),
+    )
 
-explainability_agent = ExplainabilityAgent(
+    model_evaluator = ModelEvaluator(
+        criteria=[
+            DatasetSizeCriterion(),
+            MissingValueCriterion(),
+        ]
+    )
 
-    pipeline=ExplainabilityPipeline()
+    model_training_agent = ModelTrainingAgent(
+        profiler=DatasetProfiler(),
+        model_generator=CandidateModelGenerator(),
+        evaluator=model_evaluator,
+        selector=ModelSelector(),
+        training_pipeline=TrainingPipeline(),
+    )
 
-)
+    explainability_agent = ExplainabilityAgent(
+        pipeline=ExplainabilityPipeline()
+    )
 
-# =====================================================
-# Construct Registry
-# =====================================================
+    registry_agent = ModelRegistryAgent(
+        model_saver=ModelSaver()
+    )
 
-registry_agent = ModelRegistryAgent(
+    return WorkflowEngine(
+        [
+            TaskDiscoveryAgent(),
+            HumanReviewAgent(),
+            dataset_builder_agent,
+            model_training_agent,
+            explainability_agent,
+            registry_agent,
+        ]
+    )
 
-    model_saver=ModelSaver()
 
-)
+def main() -> WorkflowState:
+    _prepare_master_artifacts()
 
-# =====================================================
-# Workflow Engine
-# =====================================================
+    for path in [
+        MASTER_DATASET_FILE,
+        DIAGNOSIS_DISTRIBUTION_FILE,
+        DATASET_PROFILE_FILE,
+        DATASET_SUMMARY_FILE,
+    ]:
+        assert_file_exists(path)
 
-engine = WorkflowEngine(
+    state = build_workflow_state()
+    engine = build_workflow_engine()
+    final_state = engine.run(state)
 
-    [
+    log_info(
+        f"Pipeline completed successfully. Final stage: {final_state.current_stage}"
+    )
+    return final_state
 
-        TaskDiscoveryAgent(),
 
-        HumanReviewAgent(),
-
-        dataset_builder_agent,
-
-        model_training_agent,
-
-        explainability_agent,
-
-        registry_agent
-
-    ]
-
-)
-
-# =====================================================
-# Execute
-# =====================================================
-
-final_state = engine.run(
-
-    state
-
-)
-
-print(
-
-    "Pipeline completed successfully."
-
-)
+if __name__ == "__main__":
+    main()

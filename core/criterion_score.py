@@ -30,19 +30,11 @@ class CriterionScore:
 
     details: Dict = field(default_factory=dict)
 
-    def evaluate(
-        self,
-        context
-    ):
-
-        score = self.compute_score(context)
-
-        return self.build_result(
-
-            score.score,
-            score.passed,
-            score.reasoning,
-            score.details
-
-        )
+    def to_dict(self):
+        return {
+            "score": self.score,
+            "passed": self.passed,
+            "reasoning": self.reasoning,
+            "details": self.details,
+        }
 

@@ -54,6 +54,16 @@ class FeatureStatisticsBuilder:
 
         )
 
+        singleton_count = 0
+        singleton_ratio = 0.0
+        rare_category_count = 0
+        rare_category_ratio = 0.0
+        q1 = None
+        q3 = None
+        iqr = None
+        outlier_count = 0
+        outlier_percentage = 0.0
+
         if non_missing:
 
             value_counts = clean.value_counts()

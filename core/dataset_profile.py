@@ -61,6 +61,10 @@ class DatasetProfile:
 
     constant_columns: List[str] = field(default_factory=list)
 
+    warnings: List[str] = field(default_factory=list)
+
+    recommendations: List[str] = field(default_factory=list)
+
     # =========================================================
     # Target Statistics
     # =========================================================

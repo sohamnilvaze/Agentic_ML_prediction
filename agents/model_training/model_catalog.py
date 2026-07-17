@@ -44,6 +44,12 @@ class ModelCatalog:
 
                 supports_missing_values=False,
 
+                requires_feature_scaling=True,
+
+                supports_multiclass=True,
+
+                produces_probabilities=True,
+
                 training_complexity="low",
 
                 default_parameters={
@@ -68,6 +74,12 @@ class ModelCatalog:
 
                 supports_missing_values=False,
 
+                requires_feature_scaling=False,
+
+                supports_multiclass=True,
+
+                produces_probabilities=True,
+
                 training_complexity="low",
 
                 default_parameters={}
@@ -87,6 +99,12 @@ class ModelCatalog:
                 supports_categorical=False,
 
                 supports_missing_values=False,
+
+                requires_feature_scaling=False,
+
+                supports_multiclass=True,
+
+                produces_probabilities=True,
 
                 training_complexity="medium",
 
@@ -112,6 +130,12 @@ class ModelCatalog:
 
                 supports_missing_values=False,
 
+                requires_feature_scaling=False,
+
+                supports_multiclass=True,
+
+                produces_probabilities=True,
+
                 training_complexity="high",
 
                 default_parameters={}
@@ -131,6 +155,12 @@ class ModelCatalog:
                 supports_categorical=False,
 
                 supports_missing_values=False,
+
+                requires_feature_scaling=True,
+
+                supports_multiclass=True,
+
+                produces_probabilities=True,
 
                 training_complexity="high",
 
@@ -156,6 +186,12 @@ class ModelCatalog:
 
                 supports_missing_values=False,
 
+                requires_feature_scaling=True,
+
+                supports_multiclass=True,
+
+                produces_probabilities=True,
+
                 training_complexity="medium",
 
                 default_parameters={}
@@ -175,6 +211,12 @@ class ModelCatalog:
                 supports_categorical=False,
 
                 supports_missing_values=False,
+
+                requires_feature_scaling=False,
+
+                supports_multiclass=True,
+
+                produces_probabilities=True,
 
                 training_complexity="low",
 

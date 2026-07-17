@@ -21,4 +21,12 @@ class FeatureEvaluationContext:
 
     target_column: str
 
-    statisttics: FeatureStatistics
+    statistics: FeatureStatistics
+
+    @property
+    def statisttics(self) -> FeatureStatistics:
+        """
+        Backward-compatible alias for the old misspelled field name.
+        """
+
+        return self.statistics

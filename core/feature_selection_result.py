@@ -23,3 +23,20 @@ class FeatureSelectionResult:
     overall_summary: str
 
     metadata: Dict = field(default_factory=dict)
+
+    def to_dict(self):
+        return {
+            "feature_ranking": {
+                "ranked_feature_names": self.feature_ranking.ranked_feature_names,
+                "feature_results": {
+                    name: result.to_dict()
+                    for name, result in self.feature_ranking.feature_results.items()
+                },
+                "metadata": self.feature_ranking.metadata,
+            },
+            "selected_feature_names": self.selected_feature_names,
+            "rejected_feature_names": self.rejected_feature_names,
+            "selection_threshold": self.selection_threshold,
+            "overall_summary": self.overall_summary,
+            "metadata": self.metadata,
+        }

@@ -15,6 +15,7 @@ from core.feature_evaluation_result import (
 from core.feature_scoring_policy import (
     FeatureScoringPolicy
 )
+from core.feature_evaluation_config import FeatureEvaluationConfig
 from core.criterion_score import CriterionScore
 
 from core.feature_criteria.missing_value import (
@@ -47,9 +48,9 @@ class FeatureEvaluator:
     5. Return a FeatureEvaluationResult.
     """
 
-    def __init__(self, config):
+    def __init__(self, config=None):
 
-        self.config = config
+        self.config = config or FeatureEvaluationConfig()
 
         self.statistics_builder = (
             FeatureStatisticsBuilder()

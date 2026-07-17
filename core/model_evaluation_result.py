@@ -29,3 +29,20 @@ class ModelEvaluationResult:
     summary: str
 
     candidate_model: CandidateModel
+
+    def to_dict(self):
+        return {
+            "model_name": self.model_name,
+            "overall_score": self.overall_score,
+            "passed": self.passed,
+            "criterion_scores": {
+                name: score.to_dict()
+                for name, score in self.criterion_scores.items()
+            },
+            "strongest_criterion": self.strongest_criterion,
+            "weakest_criterion": self.weakest_criterion,
+            "summary": self.summary,
+            "candidate_model": self.candidate_model.to_dict()
+            if hasattr(self.candidate_model, "to_dict")
+            else self.candidate_model.__dict__,
+        }

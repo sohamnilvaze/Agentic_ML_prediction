@@ -23,3 +23,17 @@ class FeatureEvaluationResult:
     weakest_criterion: str
 
     summary: str
+
+    def to_dict(self):
+        return {
+            "feature_name": self.feature_name,
+            "overall_score": self.overall_score,
+            "passed": self.passed,
+            "criterion_scores": {
+                name: score.to_dict()
+                for name, score in self.criterion_scores.items()
+            },
+            "strongest_criterion": self.strongest_criterion,
+            "weakest_criterion": self.weakest_criterion,
+            "summary": self.summary,
+        }

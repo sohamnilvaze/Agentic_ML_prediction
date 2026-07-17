@@ -9,6 +9,8 @@ class TrainingResult:
 
     model_name: str
 
+    candidate_model: CandidateModel
+
     trained_model: Any
 
     evaluation_metrics: Dict
@@ -25,4 +27,13 @@ class TrainingResult:
         default_factory=dict
     )
 
-    candidate_model: CandidateModel
+    def to_dict(self):
+        return {
+            "model_name": self.model_name,
+            "evaluation_metrics": self.evaluation_metrics,
+            "cross_validation_metrics": self.cross_validation_metrics,
+            "training_time_seconds": self.training_time_seconds,
+            "preprocessing_summary": self.preprocessing_summary,
+            "metadata": self.metadata,
+            "candidate_model": self.candidate_model.__dict__,
+        }

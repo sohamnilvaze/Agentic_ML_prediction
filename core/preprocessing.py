@@ -43,6 +43,8 @@ from core.config import (
     DATASET_SUMMARY_FILE,
     DIAGNOSIS_DISTRIBUTION_FILE,
     MISSING_VALUE_REPORT_FILE,
+    PROCESSED_DATA_DIR,
+    REPORT_DIR,
     RANDOM_STATE,
     SAMPLE_SIZE,
     MASTER_COLUMNS,
@@ -51,6 +53,7 @@ from core.config import (
 
 from core.utils import (
     current_timestamp,
+    ensure_directory_exists,
     log_info,
     log_error,
     save_json,
@@ -123,6 +126,9 @@ class MasterDatasetPreprocessor:
         log_info("=" * 80)
         log_info("Starting Master Dataset Preparation Pipeline")
         log_info("=" * 80)
+
+        ensure_directory_exists(PROCESSED_DATA_DIR)
+        ensure_directory_exists(REPORT_DIR)
 
         self.load_raw_data()
 

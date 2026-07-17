@@ -66,7 +66,20 @@ class ModelSelector:
             else:
                 rejected.append(result)
 
+        if not selected and sorted_results:
+            selected = sorted_results[: min(3, len(sorted_results))]
+            rejected = [
+                result
+                for result in sorted_results
+                if result not in selected
+            ]
+
         selected = selected[: self.max_models]
+        rejected = [
+            result
+            for result in sorted_results
+            if result not in selected
+        ]
 
         result = ModelSelectionResult()
 

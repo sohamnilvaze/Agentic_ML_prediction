@@ -13,7 +13,7 @@ from pathlib import Path
 # Project Directories
 # =============================================================================
 
-PROJECT_ROOT = Path("/content/drive/MyDrive/Agentic_MIMIC_POC")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 DATA_DIR = PROJECT_ROOT / "data"
 

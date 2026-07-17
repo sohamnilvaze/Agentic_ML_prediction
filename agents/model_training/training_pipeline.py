@@ -1,3 +1,5 @@
+import pandas as pd
+
 from core.dataset_artifact import DatasetArtifact
 from core.model_selection_result import ModelSelectionResult
 from core.training_artifact import TrainingArtifact
@@ -160,14 +162,8 @@ class TrainingPipeline:
         cv_metrics = self.cv_runner.run(
 
             estimator,
-
-            dataframe.drop(
-
-                columns=[target_column]
-
-            ),
-
-            dataframe[target_column]
+            pd.concat([X_train, X_test], axis=0),
+            pd.concat([y_train, y_test], axis=0)
 
         )
 

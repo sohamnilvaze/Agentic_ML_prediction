@@ -1,9 +1,13 @@
+from typing import TYPE_CHECKING
+
 import pandas as pd
 
-from core.candidate_task import CandidateTask
 from core.dataset_report import DatasetReport
 from core.dataset_validation_report import DatasetValidationReport
 from core.feature_selection_result import FeatureSelectionResult
+
+if TYPE_CHECKING:
+    from core.state import PredictionTask
 
 
 class DatasetReportBuilder:
@@ -18,7 +22,7 @@ class DatasetReportBuilder:
 
         self,
 
-        task: CandidateTask,
+        task: "PredictionTask",
 
         training_dataframe: pd.DataFrame,
 

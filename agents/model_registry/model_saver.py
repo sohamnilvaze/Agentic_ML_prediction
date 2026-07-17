@@ -4,6 +4,8 @@ import joblib
 
 from datetime import datetime
 
+from core.config import REGISTRY_DIR
+
 
 class ModelSaver:
     """
@@ -14,7 +16,7 @@ class ModelSaver:
 
         self,
 
-        output_directory="registered_models"
+        output_directory=REGISTRY_DIR
 
     ):
 
@@ -39,6 +41,7 @@ class ModelSaver:
     ):
 
         model_name = training_result.model_name
+        safe_model_name = model_name.replace(" ", "_")
 
         timestamp = datetime.now().strftime(
 
@@ -48,13 +51,13 @@ class ModelSaver:
 
         model_filename = (
 
-            f"{model_name}_{timestamp}.joblib"
+            f"{safe_model_name}_{timestamp}.joblib"
 
         )
 
         metadata_filename = (
 
-            f"{model_name}_{timestamp}_metadata.json"
+            f"{safe_model_name}_{timestamp}_metadata.json"
 
         )
 

@@ -77,6 +77,25 @@ class ModelEvaluator:
 
         return results
 
+    def evaluate(
+        self,
+        candidate_model,
+        dataset_profile,
+        dataset_artifact
+    ) -> ModelEvaluationResult:
+        context = self._build_context(
+            candidate_model,
+            dataset_profile,
+            dataset_artifact,
+        )
+
+        criterion_scores = self._run_all_criteria(context)
+
+        return self.scoring_policy.compute_final_score(
+            candidate_model=candidate_model,
+            criterion_scores=criterion_scores,
+        )
+
     # =====================================================
     # Context Builder
     # =====================================================

@@ -71,6 +71,15 @@ class FeatureSelector:
                     feature_name
                 )
 
+        if not selected and ranking.ranked_feature_names:
+            selected = ranking.ranked_feature_names[: min(5, len(ranking.ranked_feature_names))]
+
+        rejected = [
+            name
+            for name in ranking.ranked_feature_names
+            if name not in selected
+        ]
+
         summary = self.build_summary(
 
             ranking,

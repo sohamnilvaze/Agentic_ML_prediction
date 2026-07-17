@@ -99,6 +99,8 @@ def save_json(data: Dict[str, Any], filepath: Path) -> None:
     filepath : Path
     """
 
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+
     with open(filepath, "w") as f:
         json.dump(data, f, indent=4)
 

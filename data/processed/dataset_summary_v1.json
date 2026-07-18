@@ -1,0 +1,42 @@
+{
+    "patients_rows": 300,
+    "admissions_rows": 1200,
+    "patients_columns": 3,
+    "admissions_columns": 14,
+    "unique_patients": 300,
+    "unique_admissions": 1200,
+    "merged_rows": 1200,
+    "selected_columns": 16,
+    "engineered_features": [
+        "age",
+        "length_of_stay",
+        "admission_year",
+        "admission_month",
+        "admission_weekday"
+    ],
+    "feature_count": 21,
+    "categorical_features": [
+        "gender",
+        "admission_type",
+        "admission_location",
+        "discharge_location",
+        "insurance",
+        "language",
+        "religion",
+        "marital_status",
+        "ethnicity",
+        "diagnosis",
+        "admission_weekday"
+    ],
+    "missing_report": "E:\\SOHAM\\VSCODE\\Agent_MIMIC_poc\\data\\processed\\missing_value_report_v1.csv",
+    "unique_diagnoses": 3,
+    "dataset_profile": "E:\\SOHAM\\VSCODE\\Agent_MIMIC_poc\\data\\processed\\dataset_profile_v1.json",
+    "sample_size": 1200,
+    "original_size": 1200,
+    "pipeline_version": "1.0",
+    "dataset_name": "Master Dataset",
+    "dataset_source": "MIMIC-III",
+    "created_at": "2026-07-18_11-23-09",
+    "total_rows": 1200,
+    "total_columns": 21
+}

@@ -175,8 +175,9 @@ def build_workflow_state() -> WorkflowState:
 
 
 def build_workflow_engine() -> WorkflowEngine:
+    log_info("initializing feature evaluator")
     feature_evaluator = FeatureEvaluator(config=FeatureEvaluationConfig())
-
+    log_info("initializing dataset builder agent")
     dataset_builder_agent = DatasetBuilderAgent(
         feature_evaluator=feature_evaluator,
         feature_selector=FeatureSelector(),
@@ -184,14 +185,14 @@ def build_workflow_engine() -> WorkflowEngine:
         dataset_validator=DatasetValidator(),
         report_builder=DatasetReportBuilder(),
     )
-
+    log_info("initializing model evaluator")
     model_evaluator = ModelEvaluator(
         criteria=[
             DatasetSizeCriterion(),
             MissingValueCriterion(),
         ]
     )
-
+    log_info("initializing model training agent")
     model_training_agent = ModelTrainingAgent(
         profiler=DatasetProfiler(),
         model_generator=CandidateModelGenerator(),
@@ -199,14 +200,15 @@ def build_workflow_engine() -> WorkflowEngine:
         selector=ModelSelector(),
         training_pipeline=TrainingPipeline(),
     )
-
+    log_info("initializing explainability agent")
     explainability_agent = ExplainabilityAgent(
         pipeline=ExplainabilityPipeline()
     )
-
+    log_info("initializing fregistry agent")
     registry_agent = ModelRegistryAgent(
         model_saver=ModelSaver()
     )
+    log_info("initializing completed")
 
     return WorkflowEngine(
         [
@@ -226,13 +228,16 @@ def main() -> WorkflowState:
     for path in [
         MASTER_DATASET_FILE,
         DIAGNOSIS_DISTRIBUTION_FILE,
-        DATASET_PROFILE_FILE,
+        # DATASET_PROFILE_FILE,
         DATASET_SUMMARY_FILE,
     ]:
         assert_file_exists(path)
 
+    print("Building the workflow state")
     state = build_workflow_state()
+    print("Building the workflow engine")
     engine = build_workflow_engine()
+    print("Running the engine")
     final_state = engine.run(state)
 
     log_info(

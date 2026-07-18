@@ -1,0 +1,39 @@
+{
+    "total_rows": 1200,
+    "total_columns": 21,
+    "identifier_columns": [
+        "subject_id",
+        "hadm_id"
+    ],
+    "categorical_columns": [
+        "admission_type",
+        "admission_location",
+        "discharge_location",
+        "insurance",
+        "language",
+        "religion",
+        "marital_status",
+        "ethnicity",
+        "diagnosis",
+        "gender",
+        "admission_weekday"
+    ],
+    "numerical_columns": [
+        "subject_id",
+        "hadm_id",
+        "hospital_expire_flag",
+        "length_of_stay"
+    ],
+    "datetime_columns": [
+        "admittime",
+        "dischtime",
+        "dob"
+    ],
+    "engineered_features": [
+        "age",
+        "length_of_stay",
+        "admission_year",
+        "admission_month",
+        "admission_weekday"
+    ]
+}

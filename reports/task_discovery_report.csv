@@ -1,0 +1,4 @@
+rank,task_name,target_value,suitability_score,positive_samples,negative_samples
+1,Predict Sepsis,Sepsis,0.95,500,700
+2,Predict Pneumonia,Pneumonia,0.76,400,800
+3,Predict Heart Failure,Heart Failure,0.57,300,900

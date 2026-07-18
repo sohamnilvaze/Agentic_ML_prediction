@@ -1,0 +1,70 @@
+{
+    "tasks": [
+        {
+            "task_name": "Predict Sepsis",
+            "target_column": "diagnosis",
+            "target_value": "Sepsis",
+            "positive_samples": 500,
+            "negative_samples": 700,
+            "prevalence": 0.4167,
+            "suitability_score": 0.95,
+            "criterion_scores": {
+                "Frequency": 1.0,
+                "Balance": 0.8333333333333334
+            },
+            "criterion_explanations": {
+                "Frequency": "",
+                "Balance": ""
+            },
+            "reasoning": "Diagnosis: Sepsis\nPositive samples: 500\nFrequency score: 1.000\nBalance score: 0.833\nOverall suitability: 0.950\nHighly suitable for predictive modelling.",
+            "metadata": {
+                "positive_samples": 500,
+                "negative_samples": 700
+            }
+        },
+        {
+            "task_name": "Predict Pneumonia",
+            "target_column": "diagnosis",
+            "target_value": "Pneumonia",
+            "positive_samples": 400,
+            "negative_samples": 800,
+            "prevalence": 0.3333,
+            "suitability_score": 0.76,
+            "criterion_scores": {
+                "Frequency": 0.8,
+                "Balance": 0.6666666666666666
+            },
+            "criterion_explanations": {
+                "Frequency": "",
+                "Balance": ""
+            },
+            "reasoning": "Diagnosis: Pneumonia\nPositive samples: 400\nFrequency score: 0.800\nBalance score: 0.667\nOverall suitability: 0.760\nHighly suitable for predictive modelling.",
+            "metadata": {
+                "positive_samples": 400,
+                "negative_samples": 800
+            }
+        },
+        {
+            "task_name": "Predict Heart Failure",
+            "target_column": "diagnosis",
+            "target_value": "Heart Failure",
+            "positive_samples": 300,
+            "negative_samples": 900,
+            "prevalence": 0.25,
+            "suitability_score": 0.57,
+            "criterion_scores": {
+                "Frequency": 0.6,
+                "Balance": 0.5
+            },
+            "criterion_explanations": {
+                "Frequency": "",
+                "Balance": ""
+            },
+            "reasoning": "Diagnosis: Heart Failure\nPositive samples: 300\nFrequency score: 0.600\nBalance score: 0.500\nOverall suitability: 0.570\nSuitable for predictive modelling.",
+            "metadata": {
+                "positive_samples": 300,
+                "negative_samples": 900
+            }
+        }
+    ]
+}

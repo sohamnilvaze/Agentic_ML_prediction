@@ -148,6 +148,8 @@ class MasterDatasetPreprocessor:
 
         self.generate_diagnosis_distribution()
 
+        self.generate_dataset_profile()
+
         self.validate_master_dataset()
 
         self.sample_dataset()
